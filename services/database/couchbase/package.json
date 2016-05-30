@@ -1,0 +1,13 @@
+{
+  "name": "webwallet-database",
+  "version": "1.0.0",
+  "engines": {
+    "node": ">=6.2.0"
+  },
+  "dependencies": {
+    "bluebird": "3.4.0",
+    "couchbase": "2.1.6",
+    "json-stable-stringify": "1.0.1",
+    "zmq": "2.15.2"
+  }
+}
