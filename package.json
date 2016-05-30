@@ -4,7 +4,7 @@
     "node": ">=6.2.0"
   },
   "scripts": {
-
+    "lint": "eslint ."
   },
   "dependencies": {
     "bluebird": "3.4.0",
