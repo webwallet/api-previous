@@ -1,0 +1,8 @@
+{
+  "main": "index.js",
+  "keywords": ["zmq"],
+  "dependencies": {
+    "bluebird": "3.4.0",
+    "zmq": "2.15.1"
+  }
+}
