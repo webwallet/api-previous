@@ -4,7 +4,8 @@
     "node": ">=6.2.0"
   },
   "scripts": {
-    "lint": "eslint ."
+    "lint": "eslint .",
+    "start": "pm2 start pm2.json"
   },
   "dependencies": {
     "bluebird": "3.4.0",
