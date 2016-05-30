@@ -1,0 +1,22 @@
+{
+  "name": "webwallet-api",
+  "engines": {
+    "node": ">=6.2.0"
+  },
+  "scripts": {
+
+  },
+  "dependencies": {
+    "bluebird": "3.4.0",
+    "bunyan": "1.8.1",
+    "cors": "2.7.1",
+    "couchbase": "2.1.6",
+    "express": "4.13.4",
+    "joi": "8.1.0",
+    "json-stable-stringify": "1.0.1",
+    "swagger-tools": "0.10.1",
+    "yamljs": "0.2.7",
+    "zmq": "2.15.2"
+  },
+  "devDependencies": {}
+}
