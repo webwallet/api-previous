@@ -1,0 +1,7 @@
+{
+  "main": "logger.js",
+  "keywords": ["logs"],
+  "dependencies": {
+    "bunyan": "1.8.1"
+  }
+}
