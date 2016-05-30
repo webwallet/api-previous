@@ -1,0 +1,16 @@
+{
+  "name": "webwallet-validation",
+  "version": "1.0.0",
+  "description": "WebWallet object schema validation.",
+  "main": "index.js",
+  "scripts": {},
+  "keywords": [
+    "joi",
+    "schema"
+  ],
+  "author": "webwallet.org",
+  "license": "MIT",
+  "dependencies": {
+    "joi": "8.1.0"
+  }
+}
