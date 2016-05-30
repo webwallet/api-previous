@@ -1,0 +1,7 @@
+{
+  "main": "coroutine.js",
+  "keywords": ["yield", "generator"],
+  "dependencies": {
+    "bluebird": "3.4.0"
+  }
+}
