@@ -25,7 +25,7 @@ function createSocket(type, { uri, method = 'bind' }) {
   let socket = zmq.socket(type);
 
   if (method === 'connect') {
-    return socket.connect_(uri).then(() => socket);
+    return Promise.resolve(socket.connect(uri));
   }
 
   return socket.bind_(uri).then(() => socket);
