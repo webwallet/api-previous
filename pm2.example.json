@@ -1,23 +1,27 @@
 {
   "apps": [
     {
-      "name": "",
-      "script": "",
+      "name": "api",
+      "script": "api",
       "instances": 1,
       "exec_mode": "fork",
+      "watch": true,
       "env": {
-        "NODE_ENV": "production",
-        "PORT": "80",
+        "PORT": "8000",
       }
     },
     {
-      "name": "",
-      "script": "",
-      "instances": 2,
-      "exec_mode": "cluster",
+      "name": "database",
+      "script": "services/database",
+      "instances": 1,
+      "exec_mode": "fork",
+      "watch": true,
       "env": {
-        "NODE_ENV": "production",
         "PORT": "3000",
+        "db:type": "couchbase",
+        "db:host": "localhost",
+        "db:name": "default",
+        "zmq:router:uri": "tcp://127.0.0.1:10000"
       }
     }
   ]
