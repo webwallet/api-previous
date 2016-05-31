@@ -10,9 +10,6 @@ const builderExecutor = require('./builder-executor');
  */
 function read({ key, paths = {}, options = {} } = {}) {
   let db = this;
-  // if (key instanceof Array) {
-  //   return readKeys({ db, keys: key });
-  // }
   if (Object.keys(paths).length > 0) {
     return readKeyPaths({db, key, paths, options});
   }
