@@ -7,13 +7,13 @@ const builderExecutor = require('./builder-executor');
 
 /**
  *
- */
-function update({ key, value, paths = [], upsert = false, options = {} } = {}) {
+ */ // eslint-disable-next-line max-len
+function update({ key, value, paths = {}, upsert = false, counter = false, options = {} } = {}) {
   let db = this;
   if (Object.keys(paths).length > 0) {
     return updateKeyPaths({db, key, paths, options});
   }
-  return updateKey({db, key, value, upsert, options});
+  return updateKey({db, key, value, upsert, counter, options});
 }
 
 /**
@@ -37,7 +37,11 @@ function updateKeyPaths({ db, key, paths, options }) {
 /**
  *
  */
-function updateKey({ db, key, value, upsert, options }) {
+function updateKey({ db, key, value = 1, upsert, counter, options }) {
+  if (counter) {
+    return db.counter_(key, value, options)
+      .catch(error => Promise.resolve({key, error}));
+  }
   if (upsert) {
     return db.upsert_(key, value, options)
       .catch(error => Promise.resolve({key, error}));

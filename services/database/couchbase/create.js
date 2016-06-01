@@ -5,8 +5,6 @@ const COMMANDS = ['insert', 'addUnique']
 
 const builderExecutor = require('./builder-executor');
 
-module.exports = create;
-
 /**
  *
  */
@@ -43,3 +41,5 @@ function createKey({ db, key, value, options }) {
   return db.insert_(key, value, options)
     .catch(error => Promise.resolve({key, error}));
 }
+
+module.exports = create;
