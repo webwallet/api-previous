@@ -1,0 +1,295 @@
+swagger: "2.0"
+info:
+  version: "1"
+  title: WebWallet API
+host: localhost:8080
+basePath: /
+schemes:
+  - http
+  - https
+consumes:
+  - application/json
+produces:
+  - application/json
+
+paths:
+  /address/{address}/balance:
+    x-swagger-router-controller: controllers
+    get:
+      description: Retrieves the balance of a wallet address.
+      operationId: address.balance.get
+      parameters:
+        - name: address
+          in: path
+          type: string
+          description: A wallet address
+          required: true
+      responses:
+        "200":
+          description: Success
+          schema:
+            $ref: "#/definitions/address:balance:get:success"
+        default:
+          description: Error
+          schema:
+            $ref: "#/definitions/response:error"
+
+  /currency/{currency}/supply:
+    x-swagger-router-controller: controllers
+    post:
+      description: Retrieves the total existing currency units.
+      operationId: currency.supply.get
+      parameters:
+        - name: currency
+          in: path
+          type: string
+          description: A currency unit
+          required: true
+      responses:
+        "200":
+          description: Success
+          schema:
+            $ref: "#/definitions/currency:supply:get:success"
+        default:
+          description: Error
+          schema:
+            $ref: "#/definitions/response:error"
+
+  /transaction:
+    x-swagger-router-controller: controllers
+    post:
+      description: Creates a transaction request.
+      operationId: transaction.post
+      parameters:
+        - name: body
+          in: body
+          schema:
+            $ref: "#/definitions/transaction:post"
+      responses:
+        "200":
+          description: Success
+          schema:
+            $ref: "#/definitions/transaction:post:success"
+        default:
+          description: Error
+          schema:
+            $ref: "#/definitions/transaction:post:error"
+
+definitions:
+  address:balance:get:success:
+    required:
+      - data
+    properties:
+      data:
+        type: object
+  currency:supply:get:success:
+    required:
+      - data
+    properties:
+      data:
+        type: object
+  response:error:
+    required:
+      - errors
+    properties:
+      errors:
+        type: array
+        items:
+          type: object
+
+  transaction:post:
+    type: object
+    description: Transaction request message
+    required:
+      - hash
+      - payload
+      - signatures
+    properties:
+      hash:
+        $ref: "#/definitions/jws:hash"
+      payload:
+        $ref: "#/definitions/transaction:post:payload"
+      signatures:
+        $ref: "#/definitions/jws:signatures"
+  transaction:post:payload:
+    type: object
+    description: Transaction request parameters
+    required:
+      - inputs
+    properties:
+      amount:
+        type: string
+      currency:
+        type: string
+      inputs:
+        type: array
+        description: A collection of cryptographically signed IOUs
+        items:
+          $ref: "#/definitions/iou"
+  transaction:post:success:
+    required:
+      - data
+    properties:
+      data:
+        type: object
+  transaction:post:error:
+    required:
+      - errors
+    properties:
+      errors:
+        type: array
+        items:
+          type: object
+
+  iou:
+    type: object
+    description: A cryptographically signed IOU
+    required:
+      - hash
+      - payload
+      - signatures
+    properties:
+      hash:
+        $ref: "#/definitions/jws:hash"
+      payload:
+        $ref: "#/definitions/iou:payload"
+      signatures:
+        $ref: "#/definitions/jws:signatures"
+  iou:payload:
+    type: object
+    description: IOU details
+    required:
+      - sub
+      - aud
+      - amt
+      - unt
+      - nce
+    properties:
+      iss:
+        $ref: "#/definitions/iou:issuer"
+      typ:
+        $ref: "#/definitions/iou:type"
+      sub:
+        $ref: "#/definitions/iou:subject"
+      aud:
+        $ref: "#/definitions/iou:audience"
+      amt:
+        $ref: "#/definitions/iou:amount"
+      alw:
+        $ref: "#/definitions/iou:allowance"
+      unt:
+        $ref: "#/definitions/iou:currency"
+      nce:
+        $ref: "#/definitions/iou:nonce"
+      ref:
+        $ref: "#/definitions/iou:reference"
+      iat:
+        $ref: "#/definitions/iou:issuedAt"
+      nbf:
+        $ref: "#/definitions/iou:notBefore"
+      exp:
+        $ref: "#/definitions/iou:expires"
+  iou:issuer:
+    type: string
+    format: URI
+    description: Service in which the IOU can be cleared
+  iou:type:
+    type: string
+    description: IOU type
+  iou:subject:
+    type: string
+    format: base58
+    description: Subject that issued the IOU
+  iou:audience:
+    type: string
+    format: base58
+    description: Audience authorized to claim the IOU
+  iou:amount:
+    type: string
+    format: big number
+    description: Number of units to transfer when clearing the IOU
+  iou:allowance:
+    type: string
+    format: big number
+    description: Number of lower limit units to grant as credit
+  iou:currency:
+    type: string
+    description: Unit of account in which the IOU is denominated
+    format: base58[:ISO4217]
+    example: AKG5bJxEcb:IOU
+  iou:nonce:
+    type: string
+    description: Random string to prevent replay attacks
+  iou:reference:
+    type: string
+    format: hex
+    description: Information about the IOU
+  iou:issuedAt:
+    type: string
+    format: ISO8061
+    description: IOU issuance date
+  iou:notBefore:
+    type: string
+    format: ISO8061
+    description: IOU threshold date (starts to be valid)
+  iou:expires:
+    type: string
+    format: IOU8061
+    description: IOU expiration date (stops being valid)
+
+  jws:hash:
+    type: object
+    description: Type and value of a cryptographic hash
+    required:
+      - type
+      - value
+    properties:
+      type:
+        type: string
+        description: Cryptographic hash algorithm
+      value:
+        type: string
+        format: hex
+        description: Cryptographic hash value
+  jws:signatures:
+    type: array
+    description: Collection of cryptographic signatures of the hash
+    items:
+      $ref: "#/definitions/jws:signatures:element"
+  jws:signatures:element:
+    required:
+      - header
+      - signature
+    properties:
+      header:
+        $ref: "#/definitions/jws:header"
+      signature:
+        $ref: "#/definitions/jws:signature"
+  jws:header:
+    type: object
+    required:
+      - alg
+    properties:
+      alg:
+        type: string
+        description: Cryptographic signature scheme
+      wid:
+        type: string
+        format: base58
+        description: Wallet address identifier
+      key:
+        type: string
+        format: hex
+        description: Cryptographic public key
+      kid:
+        type: number
+        format: integer
+        description: Index in a set of public keys
+      uri:
+        type: string
+        format: URI
+        description: Service where the signing address is registered
+  jws:signature:
+    type: string
+    format: hex
+    description: Cryptographic signature
