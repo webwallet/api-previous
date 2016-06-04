@@ -35,16 +35,16 @@ const payload = joi.object().keys({
   ]).invalid(joi.ref('sub')).required(),
 
   /* Number of units to transfer when clearing the IOU */
-  num: schemas.bigNumber.positive.required(),
+  amt: schemas.bigNumber.positive.required(),
+
+  /* Number of lower limit units to grant as credit */
+  alw: schemas.bigNumber.positive,
 
   /* Unit of account in which the IOU is denominated */
-  iou: joi.string().alphanum().required(),
+  unt: joi.string().alphanum().required(),
 
   /* Nonce to prevent replay attacks */
   nce: joi.string().max(values.lengths.iou.nce.max).required(),
-
-  /* Number of units to add to the lower limit */
-  lim: schemas.bigNumber.all,
 
   /* Information about the IOU */
   ref: [
