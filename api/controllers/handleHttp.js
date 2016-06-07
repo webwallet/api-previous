@@ -5,15 +5,16 @@ const logger = require('*logger').api;
 /**
  *
  */
-function wrapHttp(method, endpoint, handler) {
+function handleHttp(handler) {
   if (typeof handler !== 'function') {
-    logger.error({name: 'missing-handler', details: endpoint});
-    throw new Error(`Missing endpoint handler: ${method} ${endpoint}`);
+    logger.error({name: 'missing-handler'});
+    throw new Error('Missing endpoint handler');
   }
 
   return function middleware(request, response) {
     /* Message composition */
-    let message = {method, endpoint, params: {}};
+    let method = request.method.toUpperCase();
+    let message = {method, params: {}};
 
     /* Parameter parsing */
     let params = request.swagger.params;
@@ -30,4 +31,4 @@ function wrapHttp(method, endpoint, handler) {
   };
 }
 
-module.exports = wrapHttp;
+module.exports = handleHttp;

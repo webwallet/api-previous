@@ -1,7 +1,6 @@
 'use strict';
 
-const logger = require('*logger').api;
-const handleHttp = require('./wrapHttp');
+const handleHttp = require('./handleHttp');
 
 /* Handlers */
 const transaction = require('./transaction');
@@ -9,9 +8,7 @@ const transaction = require('./transaction');
 /* Controllers */
 const controllers = {
   http: {
-    'transaction.post': handleHttp(
-      'POST', '/transaction', transaction.post
-    )
+    'transaction.post': handleHttp(transaction.post)
   }
 };
 
