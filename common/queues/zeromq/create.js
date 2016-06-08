@@ -31,7 +31,8 @@ function createSocket(type, { uri, connect }) {
     socket.resolves = {};
     socket.send_ = socketSend.bind(socket);
     socket.on('message', onMessage.bind(socket));
-    return Promise.resolve(socket.connect(uri));
+    socket.connect(uri);
+    return socket;
   }
 
   return socket.bind_(uri).then(() => socket);
