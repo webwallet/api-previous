@@ -1,18 +1,16 @@
 'use strict';
 
-module.exports = {
-  post: postTransactionRequest
+const dbClient = require('*clients/db');
+
+/* Database clients */
+const uri = process.env['db:zmq:uri'];
+const dbs = {
+  main: dbClient.create.zeromq({uri})
 };
 
-/**
- *
- */
-function postTransactionRequest(message) {
-  return Promise.resolve({
-    body: {
-      data: {
-        status: 'pending'
-      }
-    }
-  });
-}
+/* Controllers */
+const post = require('./post').bind({dbs});
+
+module.exports = {
+  post
+};
