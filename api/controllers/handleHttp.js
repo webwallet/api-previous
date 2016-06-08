@@ -1,5 +1,6 @@
 'use strict';
 
+const co = require('*coroutine');
 const logger = require('*logger').api;
 
 /**
@@ -11,24 +12,31 @@ function handleHttp(handler) {
     throw new Error('Missing endpoint handler');
   }
 
-  return function middleware(request, response) {
-    /* Message composition */
-    let method = request.method.toUpperCase();
-    let message = {method, params: {}};
+  return co(middleware.bind(handler));
+}
 
-    /* Parameter parsing */
-    let params = request.swagger.params;
-    for (let param in params) {
-      message.params[param] = params[param].value;
-    }
+/**
+ *
+ */
+function * middleware(request, response) {
+  let handler = this;
 
-    return handler(message)
-      .then(({ status = '200', headers = {}, body = {}}) => {
-        Object.keys(headers).map(key => response.set(key, headers[key]));
-        response.status(status);
-        response.json(body).end();
-      });
-  };
+  /* Message composition */
+  let method = request.method.toUpperCase();
+  let message = {method, params: {}};
+
+  /* Parameter parsing */
+  let params = request.swagger.params;
+  for (let param in params) {
+    message.params[param] = params[param].value;
+  }
+
+  /* Send message and return response */
+  let { status = '200', headers = {}, body = {}} = yield handler(message);
+
+  Object.keys(headers).map(key => response.set(key, headers[key]));
+  response.status(status);
+  response.json(body).end();
 }
 
 module.exports = handleHttp;
