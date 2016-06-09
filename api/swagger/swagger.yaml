@@ -14,7 +14,6 @@ produces:
 
 paths:
   /address/{address}/balance:
-    # x-swagger-router-controller: controllers
     get:
       description: Retrieves the balance of a wallet address.
       operationId: address.balance.get
@@ -35,8 +34,7 @@ paths:
             $ref: "#/definitions/response:error"
 
   /currency/{currency}/supply:
-    # x-swagger-router-controller: controllers
-    post:
+    get:
       description: Retrieves the total existing currency units.
       operationId: currency.supply.get
       parameters:
@@ -56,7 +54,6 @@ paths:
             $ref: "#/definitions/response:error"
 
   /transaction:
-    # x-swagger-router-controller: controllers
     post:
       description: Creates a transaction request.
       operationId: transaction.post

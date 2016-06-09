@@ -5,6 +5,8 @@ const databaseClient = require('*clients/db');
 
 /* Controllers */
 const controllers = [
+  'address.balance.get',
+  'currency.supply.get',
   'transaction.post'
 ];
 
