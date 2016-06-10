@@ -8,7 +8,8 @@ const swagger = require('swagger-tools');
 const express = require('express');
 
 const logger = require('*logger').api;
-const status = require('./status-codes.json');
+const errorCatcher = require('./errors/catcher');
+const unsupportedHandler = require('./errors/unsupported');
 
 const api = express();
 
@@ -21,18 +22,9 @@ const server = {
         api.use(swaggerMiddleware.swaggerRouter({
           controllers: paths.controllers
         }));
+        api.use(errorCatcher);
+        api.all('*', unsupportedHandler);
 
-        api.use((err, req, res, next) => res.status(status.badRequest).json({
-          errors: [{status: status.badRequest, name: 'bad-request'}]
-        }).end());
-        api.all('*', (req, res, next) => {
-          logger.info(`Unsupported request: ${req.method} ${req.path}`);
-          res.status(status.methodNotAllowed).json({
-            errors: [
-              {status: status.methodNotAllowed, name: 'unsupported-request'}
-            ]
-          }).end();
-        });
         callback();
       });
     });
