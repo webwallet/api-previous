@@ -56,7 +56,7 @@ paths:
   /transaction:
     post:
       description: Creates a transaction request.
-      operationId: transaction.post
+      operationId: transaction.request.post
       parameters:
         - name: body
           in: body

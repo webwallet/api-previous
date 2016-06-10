@@ -7,7 +7,7 @@ const databaseClient = require('*clients/db');
 const controllers = [
   'address.balance.get',
   'currency.supply.get',
-  'transaction.post'
+  'transaction.request.post'
 ];
 
 /* Database queues */
