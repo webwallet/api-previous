@@ -1,6 +1,6 @@
 'use strict';
 
-const handleHttp = require('./handleHttp');
+const httpWrapper = require('./httpWrapper');
 const databaseClient = require('*clients/db');
 
 /* Controllers */
@@ -13,7 +13,7 @@ const controllers = [
 /* Database queues */
 const queues = {};
 const databaseUris = {
-  main: process.env['db:zmq:uri']
+  main: process.env['db:zmq:xreq:uri']
 };
 
 /**
@@ -44,5 +44,5 @@ function loadController(path) {
 }
 
 module.exports = {
-  http: setupControllers(handleHttp, controllers)
+  http: setupControllers(httpWrapper, controllers)
 };

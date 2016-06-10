@@ -8,6 +8,7 @@
       "watch": true,
       "env": {
         "PORT": "8000",
+        "db:zmq:xreq:uri": "tcp://127.0.0.1:10000"
       }
     },
     {
@@ -21,7 +22,7 @@
         "db:type": "couchbase",
         "db:host": "localhost",
         "db:name": "default",
-        "zmq:router:uri": "tcp://127.0.0.1:10000"
+        "db:zmq:router:uri": "tcp://127.0.0.1:10000"
       }
     }
   ]

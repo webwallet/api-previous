@@ -6,7 +6,7 @@ const logger = require('*logger').api;
 /**
  *
  */
-function handleHttp(handler) {
+function httpWrapper(handler) {
   if (typeof handler !== 'function') {
     logger.error({name: 'missing-handler'});
     throw new Error('Missing endpoint handler');
@@ -39,4 +39,4 @@ function * middleware(request, response) {
   response.json(body).end();
 }
 
-module.exports = handleHttp;
+module.exports = httpWrapper;

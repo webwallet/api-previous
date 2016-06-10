@@ -34,11 +34,9 @@ function * init(options) {
   };
 
   /* Create ZQM queue for receiving queries */
-  let uri = process.env['zmq:router:uri'];
+  let uri = process.env['db:zmq:router:uri'];
   let router = yield zeromq.create('router', {uri});
   router.on('message', (...args) => handle({db, router, args}));
 
   return db;
 }
-
-
