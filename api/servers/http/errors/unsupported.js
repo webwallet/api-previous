@@ -1,7 +1,7 @@
 'use strict';
 
 const logger = require('*logger').api;
-const status = require('../status-codes.json');
+const status = require('*common/http/status-codes.json');
 
 /**
  *
