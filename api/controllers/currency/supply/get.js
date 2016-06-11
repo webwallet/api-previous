@@ -17,4 +17,16 @@ function * getCurrencySupply(message) {
   });
 }
 
-module.exports = co(getCurrencySupply);
+/**
+ *
+ */
+function exceptionHandler(exception) {
+  return {
+    body: {errors: [exception]}
+  };
+}
+
+module.exports = {
+  controller: co(getCurrencySupply),
+  exceptionHandler
+};

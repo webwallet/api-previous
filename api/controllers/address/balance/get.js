@@ -17,4 +17,16 @@ function * getAddressBalance(message) {
   });
 }
 
-module.exports = co(getAddressBalance);
+/**
+ *
+ */
+function exceptionHandler(exception) {
+  return {
+    body: {errors: [exception]}
+  };
+}
+
+module.exports = {
+  controller: co(getAddressBalance),
+  exceptionHandler
+};

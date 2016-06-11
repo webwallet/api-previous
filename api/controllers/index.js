@@ -1,5 +1,6 @@
 'use strict';
 
+const tryCatch = require('*common/trycatch');
 const httpWrapper = require('./http-wrapper');
 const databaseClient = require('*clients/db');
 
@@ -39,8 +40,12 @@ function loadController(path) {
   }
 
   // eslint-disable-next-line global-require
-  let controller = require(`./${filepath}`).bind(queues[rootEndpoint]);
-  return controller;
+  let endpoint = require(`./${filepath}`);
+  let controller = endpoint.controller;
+  let exceptionHandler = endpoint.exceptionHandler;
+  let context = queues[rootEndpoint];
+
+  return tryCatch.call(context, controller, exceptionHandler);
 }
 
 module.exports = {

@@ -15,8 +15,8 @@ const api = express();
 
 const server = {
   init({ paths = {} }, callback = () => {}) {
-    yamljs.load(paths.swagger, (swaggerObject) => {
-      swagger.initializeMiddleware(swaggerObject, (swaggerMiddleware) => {
+    yamljs.load(paths.swagger, swaggerObject => {
+      swagger.initializeMiddleware(swaggerObject, swaggerMiddleware => {
         api.use(cors());
         api.use(swaggerMiddleware.swaggerMetadata());
         api.use(swaggerMiddleware.swaggerRouter({

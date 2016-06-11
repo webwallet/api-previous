@@ -17,4 +17,16 @@ function * postTransactionRequest(message) {
   });
 }
 
-module.exports = co(postTransactionRequest);
+/**
+ *
+ */
+function exceptionHandler(exception) {
+  return {
+    body: {errors: [exception]}
+  };
+}
+
+module.exports = {
+  controller: co(postTransactionRequest),
+  exceptionHandler
+};
