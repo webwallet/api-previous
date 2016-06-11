@@ -1,6 +1,7 @@
 'use strict';
 
 const co = require('*coroutine');
+const tryCatch = require('*common/trycatch');
 
 /**
  *
@@ -26,7 +27,4 @@ function exceptionHandler(exception) {
   };
 }
 
-module.exports = {
-  controller: co(getAddressBalance),
-  exceptionHandler
-};
+module.exports = tryCatch(co(getAddressBalance), exceptionHandler);
