@@ -3,6 +3,7 @@
 const COMMANDS = ['get', 'exists']
   .reduce((reduced, command) => (reduced[command] = true) && reduced, {});
 
+const errorCodes = require('./error-codes.json');
 const builderExecutor = require('./builder-executor');
 
 /**
@@ -38,9 +39,26 @@ function readKeyPaths({ db, key, paths, options }) {
  */
 function readKey({ db, key, options }) {
   return db.get_(key, options)
-    .catch(error => Promise.resolve({key, error}));
+    .catch(exception => handleExceptions({key, exception}));
 }
 
+/**
+ *
+ */
+function handleExceptions({ key, exception }) {
+  let error = {name: '', values: {}};
+  let response;
+
+  if (exception.code === errorCodes.keyNotFound) {
+    error.name = 'key-not-found';
+    error.values = {key};
+    response = {error};
+  } else {
+    response = {key, exception};
+  }
+
+  return Promise.resolve(response);
+}
 /**
  *
  */

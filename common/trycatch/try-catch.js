@@ -11,17 +11,16 @@ const throwExceptions = [
  *
  */
 function tryCatch(runStatements, exceptionHandler) {
-  let context = this;
-
   return co(function * tryCatched(...args) {
     try {
-      return yield runStatements.apply(context, args);
+      return yield runStatements.apply(this, args);
     } catch (exception) {
       if (exception && exception.name in throwExceptions) {
         throw exception;
       }
 
-      return yield exceptionHandler(exception);
+      return yield exceptionHandler
+        .apply(this, [exception.error || exception, ...args]);
     }
   });
 }
