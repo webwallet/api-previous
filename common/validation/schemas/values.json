@@ -57,6 +57,12 @@
         "max": 140
       }
     },
+    "currency": {
+      "code": {
+        "min": 10,
+        "max": 10
+      }
+    },
     "iou": {
       "iss": {
         "max": 50
