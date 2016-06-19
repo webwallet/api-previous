@@ -5,6 +5,7 @@ const COMMANDS = ['get', 'exists']
 
 const errorCodes = require('./error-codes.json');
 const builderExecutor = require('./builder-executor');
+const exceptions = require('./exceptions');
 
 /**
  *
@@ -12,7 +13,8 @@ const builderExecutor = require('./builder-executor');
 function read({ key, paths = {}, options = {} } = {}) {
   let db = this;
   if (Object.keys(paths).length > 0) {
-    return readKeyPaths({db, key, paths, options});
+    return readKeyPaths({db, key, paths, options})
+      .then(data => exceptions.check({key, data}));
   }
   return readKey({db, key, options});
 }
@@ -39,25 +41,8 @@ function readKeyPaths({ db, key, paths, options }) {
  */
 function readKey({ db, key, options }) {
   return db.get_(key, options)
-    .catch(exception => handleExceptions({key, exception}));
-}
-
-/**
- *
- */
-function handleExceptions({ key, exception }) {
-  let error = {name: '', values: {}};
-  let response;
-
-  if (exception.code === errorCodes.keyNotFound) {
-    error.name = 'key-not-found';
-    error.values = {key};
-    response = {error};
-  } else {
-    response = {key, exception};
-  }
-
-  return Promise.resolve(response);
+    .then(data => exceptions.check({key, data}))
+    .catch(exception => exceptions.handle({key, exception}));
 }
 /**
  *
