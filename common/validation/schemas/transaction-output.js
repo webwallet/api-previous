@@ -6,12 +6,12 @@ const values = require('./values.json');
 
 const walletAddress = require('./wallet-address');
 const bigNumber = require('./big-number');
-const transactionPointer = require('./transaction-pointer');
+const previousTransaction = require('./transaction-previous');
 
 const schemas = {
   walletAddress,
   bigNumber,
-  transactionPointer
+  previousTransaction
 };
 
 /* Transaction Output */
@@ -40,8 +40,11 @@ const schema = joi.object().keys({
     ]).required()
   }).required(),
 
-  /* Pointer to the latest transaction in which the address was involved */
-  previous: schemas.transactionPointer.required()
+  /* Hash pointer to the latest transaction the address was involved in */
+  previous: joi.alternatives().when('_count', {
+    is: 1, then: joi.any().valid(null),
+    otherwise: schemas.previousTransaction.required()
+  })
 });
 
 module.exports = schema;
