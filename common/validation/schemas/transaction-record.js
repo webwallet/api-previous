@@ -8,8 +8,6 @@ const input = require('./iou');
 const output = require('./transaction-output');
 const jwsHash = require('./jws-hash');
 const cryptoHash = require('./crypto-hash');
-const walletAddress = require('./wallet-address');
-const currencyObject = require('./currency-object');
 const bigNumber = require('./big-number');
 const currencyConfig = require('./currency-config');
 const jwsSignatures = require('./jws-signatures')('transaction-record');
@@ -17,8 +15,6 @@ const jwsSignatures = require('./jws-signatures')('transaction-record');
 const schemas = {
   jwsHash,
   cryptoHash,
-  walletAddress,
-  currencyObject,
   bigNumber,
   currencyConfig,
   input,
@@ -28,18 +24,19 @@ const schemas = {
 
 /* JWS Payload */
 const transactionRecordPayload = joi.object().keys({
-  /* Transaction number/count */
-  _count: joi.number().integer().min(0).max(values.counters.transactions),
-
   /* Total number of transferred currency units */
   amount: schemas.bigNumber.positive.required(),
 
   /* Attributes of the currency (e.g. code, supply) */
-  currency: schemas.currencyObject.required(),
+  currency: joi.string().alphanum().min(values.lengths.currency.code.min)
+    .max(values.lengths.currency.code.max),
+
+  /* Increase or decrease in the currency supply */
+  easing: schemas.bigNumber.all.required(),
 
   /* Variation of the currency supply compared to the previous transaction */
   config: joi.alternatives().try([
-    joi.number().integer().min(0).less(joi.ref('_count')),
+    schemas.cryptoHash,
     joi.array().items(schemas.currencyConfig)
       .min(values.items.config.min).max(values.items.config.max)
   ]),
@@ -52,13 +49,8 @@ const transactionRecordPayload = joi.object().keys({
   outputs: joi.array().items(schemas.output)
     .min(values.items.outputs.min).max(values.items.outputs.max),
 
-  /* Previous transaction hash */
-  previous: schemas.cryptoHash.required(),
-
-  /* Transaction timestamps such as ISO date */
-  timestamp: joi.object().keys({
-    iso: joi.date().iso().required()
-  }).required()
+  /* Transaction ISO date for reference purposes only */
+  timestamp: joi.date().iso()
 }).xor('inputs', 'config').with('inputs', 'outputs');
 
 /* Transaction Record */
