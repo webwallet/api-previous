@@ -1,7 +1,7 @@
 'use strict';
 
 const httpWrapper = require('./http-wrapper');
-const databaseClient = require('*clients/db');
+const databaseClient = require('*common/database/client');
 
 /* Controllers */
 const controllers = [
