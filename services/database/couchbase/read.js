@@ -3,7 +3,6 @@
 const COMMANDS = ['get', 'exists']
   .reduce((reduced, command) => (reduced[command] = true) && reduced, {});
 
-const errorCodes = require('./error-codes.json');
 const builderExecutor = require('./builder-executor');
 const exceptions = require('./exceptions');
 
