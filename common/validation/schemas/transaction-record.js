@@ -4,17 +4,15 @@ const joi = require('joi');
 
 const values = require('./values.json');
 
-const input = require('./iou');
+const input = require('./transaction-input');
 const output = require('./transaction-output');
 const jwsHash = require('./jws-hash');
-const cryptoHash = require('./crypto-hash');
 const bigNumber = require('./big-number');
 const currencyConfig = require('./currency-config');
 const jwsSignatures = require('./jws-signatures')('transaction-record');
 
 const schemas = {
   jwsHash,
-  cryptoHash,
   bigNumber,
   currencyConfig,
   input,
@@ -36,7 +34,8 @@ const transactionRecordPayload = joi.object().keys({
 
   /* Variation of the currency supply compared to the previous transaction */
   config: joi.alternatives().try([
-    schemas.cryptoHash,
+    joi.string().hex()
+      .min(values.lengths.crypto.hash.min).max(values.lengths.crypto.hash.max),
     joi.array().items(schemas.currencyConfig)
       .min(values.items.config.min).max(values.items.config.max)
   ]),

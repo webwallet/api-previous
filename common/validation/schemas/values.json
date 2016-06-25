@@ -44,10 +44,12 @@
       }
     },
     "crypto": {
-      "hash": [
-        64,
-        128
-      ],
+      "hash": {
+        "min": 64,
+        "sha256": 64,
+        "sha512": 128,
+        "max": 128
+      },
       "publicKey": [
         66,
         130
@@ -90,6 +92,10 @@
     "crypto": {
       "hashes": [
         "sha256", "sha512"
+      ],
+      "hashTypes": [
+        "stringify:payload",
+        "merkle:payload.inputs.hash.value"
       ],
       "signatureAlgorithms": [
         "ed25519"
