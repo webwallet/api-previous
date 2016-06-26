@@ -17,9 +17,9 @@ function * getAddressBalance(request) {
   let db = this.dbs.main;
 
   let address = request.params.address;
-  let latestTransaction = yield * getLatestAddressTransaction({db, address});
+  let latestTransaction = yield getLatestAddressTransaction({db, address});
   let [hash, index] = latestTransaction.split(':');
-  let latestOutput = yield * getTransactionOutput({db, hash, index});
+  let latestOutput = yield getTransactionOutput({db, hash, index});
 
   return response.get({
     balance: latestOutput.balance,

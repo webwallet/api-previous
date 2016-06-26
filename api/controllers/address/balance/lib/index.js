@@ -1,11 +1,12 @@
 'use strict';
 
+const co = require('*common/coroutine');
 const dbkeys = require('*common/database/keys');
 const dbpaths = require('*common/database/paths');
 
 module.exports = {
-  getLatestAddressTransaction,
-  getTransactionOutput
+  getLatestAddressTransaction: co(getLatestAddressTransaction),
+  getTransactionOutput: co(getTransactionOutput)
 };
 
 /**
@@ -14,10 +15,10 @@ module.exports = {
 function * getLatestAddressTransaction({ db, address }) {
   let latestTransactionPath = dbpaths.address.transaction.pointer(0);
 
-  let {value: {[latestTransactionPath]: latestTransaction}} = yield db.read({
+  let latestTransaction = (yield db.read({
     key: dbkeys.address.transactions.index({address}),
     paths: {get: [latestTransactionPath]}
-  });
+  })).value[latestTransactionPath];
 
   return latestTransaction;
 }
@@ -28,10 +29,10 @@ function * getLatestAddressTransaction({ db, address }) {
 function * getTransactionOutput({db, hash, index}) {
   let outputIndexPath = dbpaths.transaction.output({index});
 
-  let {value: {[outputIndexPath]: output}} = yield db.read({
+  let output = (yield db.read({
     key: dbkeys.transaction.record({hash}),
     paths: {get: [outputIndexPath]}
-  });
+  })).value[outputIndexPath];
 
   return output;
 }
