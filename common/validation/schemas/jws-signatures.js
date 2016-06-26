@@ -30,7 +30,7 @@ function getJwsSignaturesSchema(type) {
         alg: joi.string().valid(signatureAlgorithms).required(),
         kid: joi.number().integer()
           .min(minPublicKeys).max(maxPublicKeys - 1).required()
-      }),
+      }).required(),
       signature: schemas.cryptoSignature.required()
     }).unique();
     break;
@@ -42,7 +42,20 @@ function getJwsSignaturesSchema(type) {
         key: schemas.cryptoPublicKey,
         kid: joi.number().integer()
           .min(minPublicKeys).max(maxPublicKeys - 1)
-      }).or('wid', 'key').with('kid', 'wid'),
+      }).or('wid', 'key').with('kid', 'wid').required(),
+      signature: schemas.cryptoSignature.required()
+    }).unique();
+    break;
+  case 'transaction-request':
+    schema = joi.array().items({
+      header: joi.object().keys({
+        alg: joi.string().valid(signatureAlgorithms).required(),
+        wid: schemas.walletAddress.required(),
+        key: schemas.cryptoPublicKey.required(),
+        kid: joi.number().integer()
+          .min(minPublicKeys).max(maxPublicKeys - 1),
+        uri: joi.string().uri().max(values.lengths.uri.max).required()
+      }).required(),
       signature: schemas.cryptoSignature.required()
     }).unique();
     break;
@@ -55,7 +68,7 @@ function getJwsSignaturesSchema(type) {
         kid: joi.number().integer()
           .min(minPublicKeys).max(maxPublicKeys - 1),
         uri: joi.string().uri().max(values.lengths.uri.max).required()
-      }),
+      }).required(),
       signature: schemas.cryptoSignature.required()
     }).unique();
     break;
@@ -67,7 +80,7 @@ function getJwsSignaturesSchema(type) {
         key: schemas.cryptoPublicKey,
         kid: joi.number().integer()
           .min(minPublicKeys).max(maxPublicKeys - 1)
-      }).or('wid', 'key').with('kid', 'wid'),
+      }).or('wid', 'key').with('kid', 'wid').required(),
       signature: schemas.cryptoSignature.required()
     }).unique();
     break;
