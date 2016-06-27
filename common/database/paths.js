@@ -10,7 +10,7 @@ module.exports = {
   },
   transaction: {
     output: ({ index = 0 }) => {
-      return `payload.outputs[${index}]`;
+      return `data.outputs[${index}]`;
     }
   }
 };

@@ -3,14 +3,14 @@
 const joi = require('joi');
 
 const values = require('./values.json');
-const jwsHash = require('./jws-hash');
-const jwsSignatures = require('./jws-signatures')('iou');
+const hashObject = require('./hash-object');
+const dataSignatures = require('./data-signatures')('iou');
 const walletAddress = require('./wallet-address');
 const bigNumber = require('./big-number');
 
 const schemas = {
-  jwsHash,
-  jwsSignatures,
+  hashObject,
+  dataSignatures,
   walletAddress,
   bigNumber
 };
@@ -69,9 +69,9 @@ const transactionInputData = joi.object().keys({
 });
 
 const schema = joi.object().keys({
-  hash: schemas.jwsHash.required(),
+  hash: schemas.hashObject.required(),
   data: transactionInputData.required(),
-  sigs: schemas.jwsSignatures.required()
+  sigs: schemas.dataSignatures.required()
 });
 
 module.exports = schema;

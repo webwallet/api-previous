@@ -6,16 +6,16 @@ const values = require('./values.json');
 const minPublicKeys = 1;
 const maxPublicKeys = values.items.publicKeys.max;
 
-const jwsHash = require('./jws-hash');
+const hashObject = require('./hash-object');
 const walletAddress = require('./wallet-address');
 const cryptoPublicKey = require('./crypto-public-key');
-const jwsSignatures = require('./jws-signatures')('address-statement');
+const dataSignatures = require('./data-signatures')('address-statement');
 
 const schemas = {
-  jwsHash,
+  hashObject,
   walletAddress,
   cryptoPublicKey,
-  jwsSignatures
+  dataSignatures
 };
 
 const payload = joi.object().keys({
@@ -32,9 +32,9 @@ const payload = joi.object().keys({
 }).assert('p.keys.length', joi.ref('s.length'));
 
 const schema = joi.object().keys({
-  hash: schemas.jwsHash.required(),
+  hash: schemas.hashObject.required(),
   payload: payload.required(),
-  signatures: schemas.jwsSignatures
+  signatures: schemas.dataSignatures
     .min(minPublicKeys).max(maxPublicKeys).required()
 });
 

@@ -70,7 +70,7 @@ function getJwsSignaturesSchema(type) {
       key: schemas.cryptoPublicKey.required(),
       kid: joi.number().integer()
         .min(minPublicKeys).max(maxPublicKeys - 1),
-      uri: joi.string().uri().max(values.lengths.uri.max).required()
+      uri: joi.string().uri().max(values.lengths.uri.max).required(),
       sig: schemas.cryptoSignature.required()
     }).with('kid', 'wid');
     schema = joi.array().items(item).unique();

@@ -5,13 +5,13 @@ const joi = require('joi');
 const values = require('./values.json');
 
 const input = require('./transaction-input');
-const jwsHash = require('./jws-hash');
-const jwsSignatures = require('./jws-signatures')('transaction-request');
+const hashObject = require('./hash-object');
+const dataSignatures = require('./data-signatures')('transaction-request');
 
 const schemas = {
-  jwsHash,
+  hashObject,
   input,
-  jwsSignatures
+  dataSignatures
 };
 
 /* Transaction Request Data */
@@ -23,9 +23,9 @@ const transactionRequestData = joi.object().keys({
 
 /* Transaction Record */
 const schema = joi.object().keys({
-  hash: schemas.jwsHash,
+  hash: schemas.hashObject,
   data: transactionRequestData.required(),
-  sigs: schemas.jwsSignatures
+  sigs: schemas.dataSignatures
     .min(0).max(values.items.confirmations.max)
 });
 
