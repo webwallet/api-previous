@@ -7,9 +7,9 @@ const values = require('./values.json');
 /* Previous Transaction Pointer */
 const schema = joi.object().keys({
   /* Previous output index */
-  index: joi.number().integer().min(1).max(values.items.outputs.max).required(),
+  out: joi.number().integer().min(1).max(values.items.outputs.max).required(),
   /* Previous transaction hash */
-  hash: joi.string().hex().required()
+  tra: joi.string().hex().required()
     .min(values.lengths.crypto.hash.min).max(values.lengths.crypto.hash.max)
 });
 
