@@ -94,8 +94,8 @@
         "sha256", "sha512"
       ],
       "hashTypes": [
-        "stringify:payload",
-        "merkle:payload.inputs.hash.value"
+        "stringify:data",
+        "merkle:data.inputs.hash.val"
       ],
       "signatureAlgorithms": [
         "ed25519"

@@ -20,8 +20,8 @@ const schemas = {
   jwsSignatures
 };
 
-/* JWS Payload */
-const transactionRecordPayload = joi.object().keys({
+/* Transaction Record Data */
+const transactionRecordData = joi.object().keys({
   /* Total number of transferred currency units */
   amount: schemas.bigNumber.positive.required(),
 
@@ -50,16 +50,14 @@ const transactionRecordPayload = joi.object().keys({
 
   /* Transaction ISO date for reference purposes only */
   timestamp: joi.date().iso()
-}).xor('inputs', 'config').with('inputs', 'outputs');
+}).xor('inputs', 'config').and('inputs', 'outputs');
 
 /* Transaction Record */
 const schema = joi.object().keys({
   hash: schemas.jwsHash.required(),
-  payload: transactionRecordPayload.required(),
-  signatures: schemas.jwsSignatures
-    .min(0).max(values.items.confirmations.max).required(),
-  confirmations: joi.number().integer()
-    .min(0).max(values.items.confirmations.max)
+  data: transactionRecordData.required(),
+  sigs: schemas.jwsSignatures
+    .min(0).max(values.items.confirmations.max).required()
 });
 
 module.exports = schema;

@@ -7,7 +7,6 @@ const jwsHash = require('./jws-hash');
 const jwsSignatures = require('./jws-signatures')('iou');
 const walletAddress = require('./wallet-address');
 const bigNumber = require('./big-number');
-const minPublicKeys = 1;
 
 const schemas = {
   jwsHash,
@@ -16,7 +15,8 @@ const schemas = {
   bigNumber
 };
 
-const payload = joi.object().keys({
+/* Transaction Input Data */
+const transactionInputData = joi.object().keys({
   /* Service in which the IOU can be cleared */
   iss: joi.string().uri().max(values.lengths.iou.iss.max),
 
@@ -44,7 +44,7 @@ const payload = joi.object().keys({
   unt: joi.string().alphanum().required(),
 
   /* Nonce to prevent replay attacks */
-  nce: joi.string().max(values.lengths.iou.nce.max).required(),
+  nce: joi.string().max(values.lengths.iou.nce.max),
 
   /* Information about the IOU */
   ref: [
@@ -61,7 +61,7 @@ const payload = joi.object().keys({
       then: joi.date().iso().min(joi.ref('iat'))}),
 
   /* IOU expiration date */
-  exp: joi.date().iso()
+  exp: joi.date().iso().required()
     .when('iat', {is: joi.date().iso().required(),
       then: joi.date().iso().min(joi.ref('iat'))})
     .when('nbf', {is: joi.date().iso().required(),
@@ -70,9 +70,8 @@ const payload = joi.object().keys({
 
 const schema = joi.object().keys({
   hash: schemas.jwsHash.required(),
-  payload: payload.required(),
-  signatures: schemas.jwsSignatures
-    .min(minPublicKeys).max(values.items.publicKeys.max).required()
+  data: transactionInputData.required(),
+  sigs: schemas.jwsSignatures.required()
 });
 
 module.exports = schema;

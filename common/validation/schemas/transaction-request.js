@@ -14,8 +14,8 @@ const schemas = {
   jwsSignatures
 };
 
-/* JWS Payload */
-const transactionRequestPayload = joi.object().keys({
+/* Transaction Request Data */
+const transactionRequestData = joi.object().keys({
   /* Instructions for transferring currency units between addresses */
   inputs: joi.array().items(schemas.input)
     .min(values.items.inputs.min).max(values.items.inputs.max).required()
@@ -24,8 +24,8 @@ const transactionRequestPayload = joi.object().keys({
 /* Transaction Record */
 const schema = joi.object().keys({
   hash: schemas.jwsHash,
-  payload: transactionRequestPayload.required(),
-  signatures: schemas.jwsSignatures
+  data: transactionRequestData.required(),
+  sigs: schemas.jwsSignatures
     .min(0).max(values.items.confirmations.max)
 });
 
