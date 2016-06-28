@@ -4,20 +4,20 @@ const joi = require('joi');
 
 const values = require('./values.json');
 
-const input = require('./transaction-input');
 const hashObject = require('./hash-object');
+const transactionInput = require('./transaction-input');
 const dataSignatures = require('./data-signatures')('transaction-request');
 
 const schemas = {
   hashObject,
-  input,
+  transactionInput,
   dataSignatures
 };
 
 /* Transaction Request Data */
 const transactionRequestData = joi.object().keys({
   /* Instructions for transferring currency units between addresses */
-  inputs: joi.array().items(schemas.input)
+  inputs: joi.array().items(schemas.transactionInput)
     .min(values.items.inputs.min).max(values.items.inputs.max).required()
 });
 

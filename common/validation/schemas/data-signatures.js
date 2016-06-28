@@ -27,8 +27,7 @@ function getJwsSignaturesSchema(type) {
   switch (type) {
   case 'address-statement':
     schema = joi.object().keys({
-      alg: joi.string().valid(signatureAlgorithms)
-        .default(signatureAlgorithms[0]),
+      alg: joi.string().valid(signatureAlgorithms),
       kid: joi.number().integer().required()
         .min(minPublicKeys).max(maxPublicKeys - 1),
       sig: schemas.cryptoSignature.required()
@@ -36,8 +35,7 @@ function getJwsSignaturesSchema(type) {
     break;
   case 'iou':
     item = joi.object().keys({
-      alg: joi.string().valid(signatureAlgorithms)
-        .default(signatureAlgorithms[0]),
+      alg: joi.string().valid(signatureAlgorithms),
       wid: schemas.walletAddress,
       key: schemas.cryptoPublicKey,
       kid: joi.number().integer()
@@ -52,8 +50,7 @@ function getJwsSignaturesSchema(type) {
     break;
   case 'transaction-request':
     schema = joi.object().keys({
-      alg: joi.string().valid(signatureAlgorithms)
-        .default(signatureAlgorithms[0]),
+      alg: joi.string().valid(signatureAlgorithms),
       wid: schemas.walletAddress.required(),
       key: schemas.cryptoPublicKey.required(),
       kid: joi.number().integer()
@@ -64,8 +61,7 @@ function getJwsSignaturesSchema(type) {
     break;
   case 'transaction-record':
     item = joi.object().keys({
-      alg: joi.string().valid(signatureAlgorithms)
-        .default(signatureAlgorithms[0]),
+      alg: joi.string().valid(signatureAlgorithms),
       wid: schemas.walletAddress.required(),
       key: schemas.cryptoPublicKey.required(),
       kid: joi.number().integer()
@@ -77,8 +73,7 @@ function getJwsSignaturesSchema(type) {
     break;
   default:
     item = joi.object().keys({
-      alg: joi.string().valid(signatureAlgorithms)
-        .default(signatureAlgorithms[0]),
+      alg: joi.string().valid(signatureAlgorithms),
       wid: schemas.walletAddress,
       key: schemas.cryptoPublicKey,
       kid: joi.number().integer()

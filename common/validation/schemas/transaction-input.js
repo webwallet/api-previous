@@ -34,34 +34,35 @@ const transactionInputData = joi.object().keys({
     joi.string().valid('*')
   ]).invalid(joi.ref('sub')).required(),
 
-  /* Number of units to transfer when clearing the IOU */
+  /* (amount) Number of units to transfer when clearing the IOU */
   amt: schemas.bigNumber.positive.required(),
 
-  /* Number of lower limit units to grant as credit */
+  /* (allowance) Number of lower limit units to grant as credit */
   alw: schemas.bigNumber.positive,
 
-  /* Unit of account in which the IOU is denominated */
-  unt: joi.string().alphanum().required(),
+  /* (currency) Unit of account identifier in which the IOU is denominated */
+  cur: joi.string().alphanum().min(values.lengths.currency.code.min)
+    .max(values.lengths.currency.code.max).required(),
 
-  /* Nonce to prevent replay attacks */
+  /* (nonce) Random value to prevent replay attacks */
   nce: joi.string().max(values.lengths.iou.nce.max),
 
   /* Information about the IOU */
   ref: [
-    joi.number().integer().min(0),
-    joi.string().hex().max(values.lengths.iou.ref.max)
+    joi.string().hex().max(values.lengths.iou.ref.max),
+    joi.number().integer().min(0)
   ],
 
   /* IOU issuance date */
-  iat: joi.date().iso().max('now'),
+  iat: joi.date().iso().max('now').options({convert: true}),
 
   /* IOU threshold date */
-  nbf: joi.date().iso()
+  nbf: joi.date().iso().options({convert: true})
     .when('iat', {is: joi.date().iso().required(),
       then: joi.date().iso().min(joi.ref('iat'))}),
 
   /* IOU expiration date */
-  exp: joi.date().iso().required()
+  exp: joi.date().iso().required().options({convert: true})
     .when('iat', {is: joi.date().iso().required(),
       then: joi.date().iso().min(joi.ref('iat'))})
     .when('nbf', {is: joi.date().iso().required(),

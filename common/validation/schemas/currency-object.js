@@ -15,7 +15,7 @@ const schemas = {
 const schema = joi.object().keys({
   /* Currency code */
   code: joi.string().alphanum().min(values.lengths.currency.code.min)
-    .max(values.lengths.currency.code.max),
+    .max(values.lengths.currency.code.max).required(),
 
   /* Number of existing currency units */
   supply: schemas.bigNumber.positive.required(),
@@ -30,7 +30,7 @@ const schema = joi.object().keys({
   ceiling: schemas.bigNumber.positive.required(),
 
   /* Indicates whether the currency ceiling can be modified */
-  fixed: joi.boolean().default(false)
+  fixed: joi.boolean().required()
 });
 
 module.exports = schema;
