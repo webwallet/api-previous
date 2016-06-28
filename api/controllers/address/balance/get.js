@@ -21,10 +21,7 @@ function * getAddressBalance(request) {
   let [hash, index] = latestTransaction.split(':');
   let latestOutput = yield getTransactionOutput({db, hash, index});
 
-  return response.get({
-    balance: latestOutput.balance,
-    limits: latestOutput.limits
-  });
+  return response.get({output: latestOutput});
 }
 
 /**
