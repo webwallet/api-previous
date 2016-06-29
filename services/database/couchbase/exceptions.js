@@ -29,6 +29,12 @@ function handleException({ key, path, exception }) {
   case errorCodes.keyNotFound:
     error.name = 'key-not-found';
     break;
+  case errorCodes.networkFailure:
+    error.name = 'network-failure';
+    break;
+  case errorCodes.databaseTimeout:
+    error.name = 'database-timeout';
+    break;
   case errorCodes.pathNotFound:
     error.name = 'path-not-found';
     response = error;

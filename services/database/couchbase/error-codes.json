@@ -1,5 +1,7 @@
 {
   "keyNotFound": 13,
+  "networkFailure": 16,
+  "databaseTimeout": 23,
   "pathNotFound": 63,
   "subTypeMismatch": 64,
   "noCommands": 78
