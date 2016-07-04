@@ -1,7 +1,7 @@
 'use strict';
 
+const logger = require('*logger');
 const errorCodes = require('./error-codes.json');
-
 /**
  *
  */
@@ -47,7 +47,8 @@ function handleException({ key, path, exception }) {
     response = error;
     break;
   default:
-    response = {key, path, details: exception};
+    error.name = 'internal-server-error';
+    logger.db.error({key, path, error, details: exception});
     break;
   }
 
