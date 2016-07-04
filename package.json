@@ -9,9 +9,9 @@
     "start": "./node_modules/.bin/pm2 start pm2.json"
   },
   "components": {
-    "clients": "common/clients",
     "common": "common",
     "config": "config",
+    "controllers": "api/controllers",
     "coroutine": "common/coroutine",
     "errors": "common/errors",
     "logger": "common/logger",
