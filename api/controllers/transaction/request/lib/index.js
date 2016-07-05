@@ -17,7 +17,8 @@ module.exports = {
   validateRequestBody,
   parseTransactionAddresses,
   parseTransactionCurrencies,
-  getTransactionCounts: co(getTransactionCounts)
+  getTransactionCounters: co(getTransactionCounters),
+  getTransactionPointers: co(getTransactionPointers)
 };
 
 /**
@@ -50,9 +51,9 @@ function validateRequestBody({ body = {} }) {
 /**
  *
  */
-function parseTransactionAddresses({ db, body }) {
+function parseTransactionAddresses({ db, transaction }) {
   // Parse addresses from transaction inputs and ignore repeated values
-  let addresses = Object.keys(body.data.inputs.map(({data: {sub, aud}}) => {
+  let addresses = Object.keys(transaction.inputs.map(({data: {sub, aud}}) => {
     return [sub, ...(aud instanceof Array ? aud : [aud])];
   }).reduce((a, b) => a.concat(b))
   .reduce((reduced, key) => (reduced[key] = true) && reduced, {}));
@@ -70,8 +71,8 @@ function parseTransactionAddresses({ db, body }) {
 /**
  *
  */
-function parseTransactionCurrencies({ db, body }) {
-  let currencies = Object.keys(body.data.inputs.map(input => input.data.cur)
+function parseTransactionCurrencies({ db, transaction }) {
+  let currencies = Object.keys(transaction.inputs.map(input => input.data.cur)
     .reduce((reduced, key) => (reduced[key] = true) && reduced, {}));
 
   if (currencies.length > config.max.currenciesPerTransaction) {
@@ -87,7 +88,7 @@ function parseTransactionCurrencies({ db, body }) {
 /**
  *
  */
-function * getTransactionCounts({ db, currencies }) {
+function * getTransactionCounters({ db, currencies }) {
   let counts = (yield currencies.map(currency => {
     return db.read({
       key: dbkeys.currency.transaction.count({currency})
@@ -108,4 +109,25 @@ function * getTransactionCounts({ db, currencies }) {
     .reduce((reduced, count, index) => {
       return (reduced[currencies[index]] = count) && reduced;
     }, {});
+}
+
+/**
+ *
+ */
+function * getTransactionPointers({ db, addresses }) {
+  let transactionPointers = yield addresses.map(address => {
+    return getLatestAddressTransaction({db, address});
+  });
+
+  for (let index in transactionPointers) {
+    let pointer = transactionPointers[index];
+    if (typeof pointer !== 'string') {
+      let error = new Error();
+      error.name = 'missing-transaction-pointer';
+      error.values = {address: addresses[index]};
+      throw error;
+    }
+  }
+
+  return transactionPointers;
 }
