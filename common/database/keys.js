@@ -8,6 +8,13 @@ module.exports = {
       }
     }
   },
+  currency: {
+    transaction: {
+      count: ({ currency }) => {
+        return `cur::${currency}::tra`;
+      }
+    }
+  },
   transaction: {
     record: ({ hash }) => {
       return `tra::${hash}`;

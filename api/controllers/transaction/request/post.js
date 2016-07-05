@@ -6,7 +6,9 @@ const status = require('*common/http/status-codes.json');
 const response = require('./response.js');
 
 const {
-  validateRequestBody
+  validateRequestBody,
+  getTransactionCurrencies,
+  getTransactionCounts
 } = require('./lib');
 
 /**
@@ -16,8 +18,10 @@ function * postTransactionRequest(request) {
   let db = this.dbs.main;
 
   let body = yield validateRequestBody(request.params);
-  // validate transaction inputs
-  // get transaction count
+  // validate that transaction inputs have not been cleared before
+
+  let currencies = yield getTransactionCurrencies({db, body});
+  let transactionCounts = yield getTransactionCounts({db, currencies});
   // get latest address transactions
   // build transaction outputs
   // create transaction record
