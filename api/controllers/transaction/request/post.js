@@ -10,7 +10,8 @@ const {
   parseTransactionAddresses,
   parseTransactionCurrencies,
   getTransactionCounters,
-  getTransactionPointers
+  getTransactionPointers,
+  getTransactionOutputs
 } = require('./lib');
 
 /**
@@ -26,6 +27,7 @@ function * postTransactionRequest(request) {
   let currencies = parseTransactionCurrencies({db, transaction: body.data});
   let counters = yield getTransactionCounters({db, currencies});
   let pointers = yield getTransactionPointers({db, addresses});
+  let outputs = yield getTransactionOutputs({db, addresses, pointers});
   // build transaction outputs
   // create transaction record
 
