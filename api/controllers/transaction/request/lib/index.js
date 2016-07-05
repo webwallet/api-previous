@@ -15,7 +15,8 @@ const {
 
 module.exports = {
   validateRequestBody,
-  getTransactionCurrencies,
+  parseTransactionAddresses,
+  parseTransactionCurrencies,
   getTransactionCounts: co(getTransactionCounts)
 };
 
@@ -45,11 +46,32 @@ function validateRequestBody({ body = {} }) {
   });
 }
 
+
 /**
  *
  */
-function getTransactionCurrencies({ db, body }) {
-  let currencies = Object.keys(body.data.inputs.map(iou => iou.data.cur)
+function parseTransactionAddresses({ db, body }) {
+  // Parse addresses from transaction inputs and ignore repeated values
+  let addresses = Object.keys(body.data.inputs.map(({data: {sub, aud}}) => {
+    return [sub, ...(aud instanceof Array ? aud : [aud])];
+  }).reduce((a, b) => a.concat(b))
+  .reduce((reduced, key) => (reduced[key] = true) && reduced, {}));
+
+  if (addresses.length > config.max.addressesPerTransaction) {
+    let error = new Error();
+    error.name = 'too-many-addresses';
+    error.values = {addresses};
+    throw error;
+  }
+
+  return addresses;
+}
+
+/**
+ *
+ */
+function parseTransactionCurrencies({ db, body }) {
+  let currencies = Object.keys(body.data.inputs.map(input => input.data.cur)
     .reduce((reduced, key) => (reduced[key] = true) && reduced, {}));
 
   if (currencies.length > config.max.currenciesPerTransaction) {

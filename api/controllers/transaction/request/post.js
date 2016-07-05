@@ -7,7 +7,8 @@ const response = require('./response.js');
 
 const {
   validateRequestBody,
-  getTransactionCurrencies,
+  parseTransactionAddresses,
+  parseTransactionCurrencies,
   getTransactionCounts
 } = require('./lib');
 
@@ -20,7 +21,8 @@ function * postTransactionRequest(request) {
   let body = yield validateRequestBody(request.params);
   // validate that transaction inputs have not been cleared before
 
-  let currencies = yield getTransactionCurrencies({db, body});
+  let addresses = parseTransactionAddresses({db, body});
+  let currencies = parseTransactionCurrencies({db, body});
   let transactionCounts = yield getTransactionCounts({db, currencies});
   // get latest address transactions
   // build transaction outputs
