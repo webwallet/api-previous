@@ -5,7 +5,7 @@ const arithmetic = require('*common/arithmetic');
 /**
  *
  */
-function * computeTransactionOutputs({ db, addresses, currencies, inputs, previous }) {
+function computeTransactionOutputs({ db, addresses, currencies, inputs, previous }) {
   /* Initialize total transaction amount counters by address */
   let amounts = addresses.reduce((amounts, address) => (amounts[address] = 0) || amounts, {});
   let outputs = [];
@@ -31,7 +31,7 @@ function * computeTransactionOutputs({ db, addresses, currencies, inputs, previo
     outputs.push(...computeCurrencyOutputs({amounts, previous: outputsByCurrency[currency]}));
   }
 
-  return yield outputs;
+  return outputs;
 }
 
 /**

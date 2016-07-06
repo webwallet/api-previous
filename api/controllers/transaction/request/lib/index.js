@@ -22,7 +22,7 @@ module.exports = {
   getTransactionCounters: co(getTransactionCounters),
   getTransactionPointers: co(getTransactionPointers),
   getTransactionOutputs: co(getTransactionOutputs),
-  computeTransactionOutputs: co(computeTransactionOutputs)
+  computeTransactionOutputs
 };
 
 /**

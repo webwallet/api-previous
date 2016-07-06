@@ -11,7 +11,8 @@ const {
   parseTransactionCurrencies,
   getTransactionCounters,
   getTransactionPointers,
-  getTransactionOutputs
+  getTransactionOutputs,
+  computeTransactionOutputs
 } = require('./lib');
 
 /**
@@ -19,16 +20,21 @@ const {
  */
 function * postTransactionRequest(request) {
   let db = this.dbs.main;
+  let transaction = {};
+  let previous = {};
 
   let body = yield validateRequestBody(request.params);
+  let inputs = transaction.inputs = body.data.inputs;
   // validate that transaction inputs have not been cleared before
 
   let addresses = parseTransactionAddresses({db, transaction: body.data});
   let currencies = parseTransactionCurrencies({db, transaction: body.data});
-  let counters = yield getTransactionCounters({db, currencies});
-  let pointers = yield getTransactionPointers({db, addresses});
-  let outputs = yield getTransactionOutputs({db, addresses, pointers});
-  // build transaction outputs
+  previous.counters = yield getTransactionCounters({db, currencies});
+  previous.pointers = yield getTransactionPointers({db, addresses});
+  previous.outputs = yield getTransactionOutputs({db, addresses, pointers: previous.pointers});
+
+  let computeOutputsParams = {db, addresses, currencies, inputs, previous};
+  transaction.outputs = computeTransactionOutputs(computeOutputsParams);
   // create transaction record
 
   return response.post(body);
