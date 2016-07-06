@@ -5,6 +5,8 @@ const dbkeys = require('*common/database/keys');
 const dbpaths = require('*common/database/paths');
 const config = require('*config');
 
+const computeTransactionOutputs = require('./computeTransactionOutputs');
+
 const joi = require('joi');
 const schemas = require('*common/validation/schemas');
 
@@ -19,7 +21,8 @@ module.exports = {
   parseTransactionCurrencies,
   getTransactionCounters: co(getTransactionCounters),
   getTransactionPointers: co(getTransactionPointers),
-  getTransactionOutputs: co(getTransactionOutputs)
+  getTransactionOutputs: co(getTransactionOutputs),
+  computeTransactionOutputs: co(computeTransactionOutputs)
 };
 
 /**
@@ -56,7 +59,7 @@ function parseTransactionAddresses({ db, transaction }) {
   // Parse addresses from transaction inputs and ignore repeated values
   let addresses = Object.keys(transaction.inputs.map(({data: {sub, aud}}) => {
     return [sub, ...(aud instanceof Array ? aud : [aud])];
-  }).reduce((a, b) => a.concat(b))
+  }).reduce((array1, array2) => array1.concat(array2))
   .reduce((reduced, key) => (reduced[key] = true) && reduced, {}));
 
   if (addresses.length > config.max.addressesPerTransaction) {
@@ -136,7 +139,7 @@ function * getTransactionPointers({ db, addresses }) {
 /**
  *
  */
-function * getTransactionOutputs({db, addresses, pointers}) {
+function * getTransactionOutputs({ db, addresses, pointers }) {
   let transactionOutputs = yield pointers.map(pointer => {
     let [hash, index] = pointer.split(':');
     return getTransactionOutput({db, hash, index});
