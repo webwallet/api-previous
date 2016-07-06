@@ -30,7 +30,7 @@
     "comma-spacing": ["error",
       {"before": false, "after": true}],
     "comma-dangle": "error",
-    "max-len": ["error", {"code": 80,
+    "max-len": ["error", {"code": 100,
       "ignoreComments": true}],
     "max-depth": ["error", 4],
     "max-statements": ["error", 20],
