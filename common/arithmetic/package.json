@@ -1,0 +1,7 @@
+{
+  "main": "arithmetic.js",
+  "keywords": ["arithmetic", "bignumber"],
+  "dependencies": {
+    "bignumber.js": "2.3.0"
+  }
+}
