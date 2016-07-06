@@ -1,19 +1,16 @@
 'use strict';
 
 const co = require('*common/coroutine');
-const dbkeys = require('*common/database/keys');
-const dbpaths = require('*common/database/paths');
-const config = require('*config');
 
+const parseTransactionAddresses = require('./parseTransactionAddresses');
+const parseTransactionCurrencies = require('./parseTransactionCurrencies');
+const getTransactionCounters = require('./getTransactionCounters');
+const getTransactionPointers = require('./getTransactionPointers');
+const getTransactionOutputs = require('./getTransactionOutputs');
 const computeTransactionOutputs = require('./computeTransactionOutputs');
 
 const joi = require('joi');
 const schemas = require('*common/validation/schemas');
-
-const {
-  getLatestAddressTransaction,
-  getTransactionOutput
-} = require('*controllers/address/balance/lib');
 
 module.exports = {
   validateRequestBody,
@@ -49,111 +46,4 @@ function validateRequestBody({ body = {} }) {
       return resolve(value);
     });
   });
-}
-
-
-/**
- *
- */
-function parseTransactionAddresses({ db, transaction }) {
-  // Parse addresses from transaction inputs and ignore repeated values
-  let addresses = Object.keys(transaction.inputs.map(({data: {sub, aud}}) => {
-    return [sub, ...(aud instanceof Array ? aud : [aud])];
-  }).reduce((array1, array2) => array1.concat(array2))
-  .reduce((reduced, key) => (reduced[key] = true) && reduced, {}));
-
-  if (addresses.length > config.max.addressesPerTransaction) {
-    let error = new Error();
-    error.name = 'too-many-addresses';
-    error.values = {addresses};
-    throw error;
-  }
-
-  return addresses;
-}
-
-/**
- *
- */
-function parseTransactionCurrencies({ db, transaction }) {
-  let currencies = Object.keys(transaction.inputs.map(input => input.data.cur)
-    .reduce((reduced, key) => (reduced[key] = true) && reduced, {}));
-
-  if (currencies.length > config.max.currenciesPerTransaction) {
-    let error = new Error();
-    error.name = 'too-many-currencies';
-    error.values = {currencies};
-    throw error;
-  }
-
-  return currencies;
-}
-
-/**
- *
- */
-function * getTransactionCounters({ db, currencies }) {
-  let counts = (yield currencies.map(currency => {
-    return db.read({
-      key: dbkeys.currency.transaction.count({currency})
-    });
-  }));
-
-  for (let index in counts) {
-    let count = counts[index];
-    if (typeof count.value !== 'number') {
-      let error = new Error();
-      error.name = 'missing-transaction-count';
-      error.values = {currency: currencies[index]};
-      throw error;
-    }
-  }
-
-  return counts.map(count => count.value)
-    .reduce((reduced, count, index) => {
-      return (reduced[currencies[index]] = count) && reduced;
-    }, {});
-}
-
-/**
- *
- */
-function * getTransactionPointers({ db, addresses }) {
-  let transactionPointers = yield addresses.map(address => {
-    return getLatestAddressTransaction({db, address});
-  });
-
-  for (let index in transactionPointers) {
-    let pointer = transactionPointers[index];
-    if (typeof pointer !== 'string') {
-      let error = new Error();
-      error.name = 'missing-transaction-pointer';
-      error.values = {address: addresses[index]};
-      throw error;
-    }
-  }
-
-  return transactionPointers;
-}
-
-/**
- *
- */
-function * getTransactionOutputs({ db, addresses, pointers }) {
-  let transactionOutputs = yield pointers.map(pointer => {
-    let [hash, index] = pointer.split(':');
-    return getTransactionOutput({db, hash, index});
-  });
-
-  for (let index in transactionOutputs) {
-    let output = transactionOutputs[index];
-    if (output.error) {
-      let error = new Error();
-      error.name = 'missing-transaction-output';
-      error.values = {address: addresses[index], pointer: pointers[index]};
-      throw error;
-    }
-  }
-
-  return transactionOutputs;
 }
