@@ -3,8 +3,8 @@
 module.exports = {
   address: {
     transaction: {
-      pointer: ({ index = 0 }) => {
-        return `pointers[${index}]`;
+      pointer: (index) => {
+        return typeof index === 'number' ? `pointers[${index}]` : 'pointers';
       }
     }
   },

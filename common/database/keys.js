@@ -10,14 +10,14 @@ module.exports = {
   },
   currency: {
     transaction: {
-      count: ({ currency }) => {
-        return `cur::${currency}::tra`;
+      counter: ({ currency }) => {
+        return `cur::${currency}::txn`;
       }
     }
   },
   transaction: {
     record: ({ hash }) => {
-      return `tra::${hash}`;
+      return `txn::${hash}`;
     }
   }
 };
