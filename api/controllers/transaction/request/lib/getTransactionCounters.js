@@ -8,7 +8,7 @@ const dbkeys = require('*common/database/keys');
 function * getTransactionCounters({ db, currencies }) {
   let counts = (yield currencies.map(currency => {
     return db.read({
-      key: dbkeys.currency.transaction.count({currency})
+      key: dbkeys.currency.transaction.counter({currency})
     });
   }));
 

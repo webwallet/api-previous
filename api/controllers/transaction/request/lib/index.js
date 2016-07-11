@@ -8,6 +8,9 @@ const getTransactionCounters = require('./getTransactionCounters');
 const getTransactionPointers = require('./getTransactionPointers');
 const getTransactionOutputs = require('./getTransactionOutputs');
 const computeTransactionOutputs = require('./computeTransactionOutputs');
+const buildTransactionRecord = require('./buildTransactionRecord');
+const insertTransactionPointers = require('./insertTransactionPointers');
+const insertTransactionRecord = require('./insertTransactionRecord');
 
 const joi = require('joi');
 const schemas = require('*common/validation/schemas');
@@ -19,7 +22,10 @@ module.exports = {
   getTransactionCounters: co(getTransactionCounters),
   getTransactionPointers: co(getTransactionPointers),
   getTransactionOutputs: co(getTransactionOutputs),
-  computeTransactionOutputs
+  computeTransactionOutputs,
+  buildTransactionRecord,
+  insertTransactionPointers: co(insertTransactionPointers),
+  insertTransactionRecord: co(insertTransactionRecord)
 };
 
 /**
