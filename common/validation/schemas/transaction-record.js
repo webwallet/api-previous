@@ -28,7 +28,7 @@ const currencyKeysBigNumberValues = joi.object()
 /* Transaction Record Data */
 const transactionRecordData = joi.object().keys({
   /* Total number of transferred currency units per currency */
-  amount: currencyKeysBigNumberValues
+  amounts: currencyKeysBigNumberValues
     .pattern(new RegExp(values.regex.currency.code),
       schemas.bigNumber.positive.required()).required(),
 
@@ -55,7 +55,7 @@ const transactionRecordData = joi.object().keys({
 
   /* Resulting balance and limit changes in the involved addresses */
   outputs: joi.array().items(schemas.transactionOutput)
-    .min(values.items.outputs.min).max(values.items.outputs.max),
+    .min(values.items.outputs.min).max(values.items.outputs.max)
 }).xor('inputs', 'config').and('inputs', 'outputs');
 
 const transactionRecordMeta = joi.object().keys({
