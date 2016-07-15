@@ -6,7 +6,7 @@ const config = require('*config');
  *
  */
 function parseTransactionAddresses({ db, transaction }) {
-  // Parse addresses from transaction inputs and ignore repeated values
+  /* Parse addresses from transaction inputs and ignore repeated values */
   let addresses = Object.keys(transaction.inputs.map(({data: {sub, aud}}) => {
     return [sub, ...(aud instanceof Array ? aud : [aud])];
   }).reduce((array1, array2) => array1.concat(array2))

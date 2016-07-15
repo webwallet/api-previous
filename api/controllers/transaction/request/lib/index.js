@@ -2,11 +2,10 @@
 
 const co = require('*common/coroutine');
 
-const parseTransactionAddresses = require('./parseTransactionAddresses');
-const parseTransactionCurrencies = require('./parseTransactionCurrencies');
-const getTransactionCounters = require('./getTransactionCounters');
-const getTransactionPointers = require('./getTransactionPointers');
-const getTransactionOutputs = require('./getTransactionOutputs');
+const read = require('./read');
+const parse = require('./parse');
+const write = require('./write');
+
 const computeTransactionOutputs = require('./computeTransactionOutputs');
 const buildTransactionRecord = require('./buildTransactionRecord');
 const insertTransactionPointers = require('./insertTransactionPointers');
@@ -16,12 +15,10 @@ const joi = require('joi');
 const schemas = require('*common/validation/schemas');
 
 module.exports = {
+  read,
+  parse,
+  write,
   validateRequestBody,
-  parseTransactionAddresses,
-  parseTransactionCurrencies,
-  getTransactionCounters: co(getTransactionCounters),
-  getTransactionPointers: co(getTransactionPointers),
-  getTransactionOutputs: co(getTransactionOutputs),
   computeTransactionOutputs,
   buildTransactionRecord,
   insertTransactionPointers: co(insertTransactionPointers),
