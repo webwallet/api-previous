@@ -8,8 +8,7 @@ const {
  *
  */
 function * getTransactionOutputs({ db, addresses, pointers }) {
-  let transactionOutputs = yield pointers.map(pointer => {
-    let [hash, index] = pointer.split(':');
+  let transactionOutputs = yield pointers.map(({hash, index}) => {
     return getTransactionOutput({db, hash, index});
   });
 

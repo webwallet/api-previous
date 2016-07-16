@@ -8,13 +8,14 @@ const {
  *
  */
 function * getTransactionPointers({ db, addresses }) {
-  let transactionPointers = yield addresses.map(address => {
+  let transactionPointers = (yield addresses.map(address => {
     return getLatestAddressTransaction({db, address});
-  });
+  })).map(transaction => transaction.value);
 
   for (let index in transactionPointers) {
     let pointer = transactionPointers[index];
-    if (typeof pointer !== 'string') {
+    // pending: validate transaction pointer
+    if (typeof pointer.hash !== 'string') {
       let error = new Error();
       error.name = 'missing-transaction-pointer';
       error.values = {address: addresses[index]};

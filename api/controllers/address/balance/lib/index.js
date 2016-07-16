@@ -13,13 +13,14 @@ module.exports = {
  *
  */
 function * getLatestAddressTransaction({ db, address }) {
-  let latestTransactionPath = dbpaths.address.transaction.pointer(0);
+  let latestTransactionPath = dbpaths.address.transaction.latest();
 
-  let latestTransaction = (yield db.read({
-    key: dbkeys.address.transactions.index({address}),
+  let latestTransaction = yield db.read({
+    key: dbkeys.address.transactions.latest({address}),
     paths: {get: [latestTransactionPath]}
-  })).value[latestTransactionPath];
+  });
 
+  latestTransaction.value = latestTransaction.value[latestTransactionPath];
   return latestTransaction;
 }
 

@@ -3,15 +3,15 @@
 module.exports = {
   address: {
     transactions: {
-      index: ({ address }) => {
-        return `adr::${address}::txs`;
+      latest: ({ address }) => {
+        return `adr::${address}::txs::latest`;
       }
     }
   },
   currency: {
     transaction: {
       counter: ({ currency }) => {
-        return `cur::${currency}::txn`;
+        return `cur::${currency}::txs`;
       }
     }
   },

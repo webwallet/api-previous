@@ -7,7 +7,7 @@ module.exports = {
 /**
  *
  */
-function get({ output }) {
+function get({ output, count }) {
   return {
     body: {
       data: {
@@ -17,6 +17,9 @@ function get({ output }) {
           lower: output.lim.low,
           upper: output.lim.upp
         }
+      },
+      meta: {
+        count
       }
     }
   };
